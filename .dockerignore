@@ -2,6 +2,7 @@
 .env
 runtime/
 assets/database/backups/
+assets/website/**/db/*.bak
 assets/game/config/**/*.log
 assets/game/config/**/core.*
 assets/game/config/**/.DS_Store

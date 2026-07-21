@@ -1,6 +1,6 @@
 # Cabal Docker Compose 服务端
 
-本项目以 `192.168.153.200` 为游戏资产来源，包含重新构建的游戏与 SQL Server 镜像，以及运行所需的配置、数据、二进制和私有库。部署设计要求 `assets/database/backups` 中存在 11 个已校验数据库备份。支持 Docker Compose v2 的 WSL2 和标准 Linux。
+本项目以 `192.168.153.200` 为游戏资产来源，包含重新构建的游戏、网站与 SQL Server 镜像，以及运行所需的配置、数据、二进制和私有库。部署设计要求 `assets/database/backups` 中存在完整游戏数据库备份，并从 `assets/website/simplewebsite/db` 恢复网站商城数据库。支持 Docker Compose v2 的 WSL2 和标准 Linux。
 
 ## 快速部署
 
@@ -28,10 +28,12 @@ chmod +x bin/cabalctl
 
 1. 构建固定 Ubuntu 24.04 与 SQL Server 2022 CU18 基础镜像。
 2. 创建新的 SQL 数据卷。
-3. 恢复 `assets/database/backups` 中的数据库；空目录且数据卷也为空时初始化会明确失败。
-4. 重建 `adb01` 链接服务器。
-5. 将只读基线配置复制到 `runtime/game-config`。
-6. 幂等应用 IP、客户端版本、MagicKey 和 SQL 连接配置后启动 19 个 Cabal 进程。
+3. 恢复游戏数据库及网站附带的 `CabalShop` 数据库。
+4. 幂等创建网站需要的 Account 扩展表和存储过程。
+5. 重建 `adb01` 链接服务器。
+6. 构建 PHP/Apache 网站并通过容器网络连接 SQL Server。
+7. 将只读基线配置复制到 `runtime/game-config`。
+8. 幂等应用 IP、客户端版本、MagicKey 和 SQL 连接配置后启动 19 个 Cabal 进程。
 
 数据库已存在时初始化器只检查并跳过恢复，不会覆盖现有数据。重复执行 `./bin/cabalctl up` 不会重建数据库或游戏主容器。
 
@@ -43,7 +45,10 @@ chmod +x bin/cabalctl
 - `CLIENT_VERSION`、`NORMAL_CLIENT_MAGIC_KEY`：客户端兼容参数。
 - `MSSQL_SA_PASSWORD`、`MSSQL_PORT`：SQL Server 凭据与宿主端口。
 - `AUTO_START`：设为 `false` 时只启动 Supervisor，不自动启动游戏进程。
-- `TZ`：两个容器的时区。
+- `WEBSITE_PORT`、`WEBSITE_PUBLIC_URL`：网站 HTTP 端口和对外地址。
+- `WEBSITE_ADMIN_USERNAMES`：逗号分隔的网站管理员账号。
+- `WEBSITE_DB_*`：网站使用的 Account、CabalShop、CabalCash 和 Server01 库名。
+- `TZ`：所有容器的时区。
 
 `MSSQL_SA_PASSWORD` 至少需要 8 个字符，并且应同时包含大写字母、小写字母、数字和符号。由于游戏服务自身的密码解析限制，密码不能包含 `@`、`/` 或 `\`。仅用于本地测试的可用示例：
 
@@ -67,6 +72,7 @@ MSSQL_SA_PASSWORD=CabalDb!2026X
 ## 端口
 
 - `1433/tcp`：SQL Server，可用 `MSSQL_PORT` 修改宿主端口。
+- `8080/tcp`：网站 HTTP 入口，可用 `WEBSITE_PORT` 修改宿主端口。
 - `35001-35100/tcp`：Cabal 服务范围。
 - 默认实际服务包括 `35001`、`35003`、`35011-35015` 等，完整值由源配置决定。
 
@@ -77,6 +83,7 @@ WSL2 NAT 模式下，局域网客户端可能无法直接访问 WSL 地址。优
 ```bash
 ./bin/cabalctl status
 ./bin/cabalctl logs 200 game
+./bin/cabalctl logs 200 website
 ./bin/cabalctl game restart
 ./bin/cabalctl channel 5 stop
 ./bin/cabalctl db-backup

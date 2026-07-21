@@ -21,7 +21,10 @@ done
 "${connection[@]}" -Q "SELECT 1" >/dev/null
 
 shopt -s nullglob
-backups=(/var/opt/mssql/backup/*.bak)
+backups=(
+  /var/opt/mssql/backup/*.bak
+  /var/opt/mssql/website-backup/*.bak
+)
 if ((${#backups[@]} == 0)); then
   existing_count="$(
     "${connection[@]}" -h -1 -W -Q \
@@ -57,6 +60,8 @@ for backup in "${backups[@]}"; do
       THROW 51000, N'Database ${database_name} is not online', 1;
   "
 done
+
+"${connection[@]}" -i /usr/local/share/cabal/website-init.sql
 
 "${connection[@]}" -Q "
   IF EXISTS (SELECT 1 FROM sys.servers WHERE name = N'adb01')

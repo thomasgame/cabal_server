@@ -20,6 +20,7 @@ services:
     volumes:
       - sql-data:/var/opt/mssql/data
       - ./assets/database/backups:/var/opt/mssql/backup:ro
+      - ./assets/website/simplewebsite/db:/var/opt/mssql/website-backup:ro
       - ./runtime/backups:/var/opt/mssql/runtime-backup
     shm_size: 2gb
     healthcheck:
@@ -45,6 +46,7 @@ services:
       - /usr/local/bin/cabal-db-restore
     volumes:
       - ./assets/database/backups:/var/opt/mssql/backup:ro
+      - ./assets/website/simplewebsite/db:/var/opt/mssql/website-backup:ro
     networks:
       - cabal
 
@@ -75,6 +77,44 @@ services:
       - ./runtime/game-config:/etc/cabal
       - ./runtime/logs:/var/log/cabal
     stop_grace_period: 3m
+    networks:
+      - cabal
+
+  website:
+    build:
+      context: .
+      dockerfile: docker/website/Dockerfile
+      args:
+        TZ: ${TZ:-Asia/Shanghai}
+    image: cabal/website:local
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+      database-init:
+        condition: service_completed_successfully
+    environment:
+      TZ: ${TZ:-Asia/Shanghai}
+      MSSQL_HOST: database
+      MSSQL_PORT: "1433"
+      MSSQL_USER: sa
+      MSSQL_PASSWORD: ${MSSQL_SA_PASSWORD}
+      WEBSITE_DB_ACCOUNT: ${WEBSITE_DB_ACCOUNT:-Account}
+      WEBSITE_DB_SHOP: ${WEBSITE_DB_SHOP:-CabalShop}
+      WEBSITE_DB_CASH: ${WEBSITE_DB_CASH:-CabalCash}
+      WEBSITE_DB_GAME: ${WEBSITE_DB_GAME:-Server01}
+      WEBSITE_ADMIN_USERNAMES: ${WEBSITE_ADMIN_USERNAMES:-}
+      WEBSITE_PUBLIC_URL: ${WEBSITE_PUBLIC_URL:-}
+    ports:
+      - "${WEBSITE_PORT:-8080}:80"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -fsS http://localhost/index.php >/dev/null
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
     networks:
       - cabal
 

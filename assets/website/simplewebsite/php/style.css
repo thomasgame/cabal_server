@@ -1,0 +1,139 @@
+/* Base */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: url('assets/bg.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    overflow-x: hidden;
+}
+
+/* Hero Container */
+.hero-container {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Slightly darker overlay */
+}
+
+/* Main Header / Top Bar */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background: rgba(15, 15, 15, 0.85);
+    backdrop-filter: blur(5px);
+}
+
+.logo {
+    height: 50px;
+}
+
+.top-nav {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.top-nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    transition: color 0.2s;
+}
+
+.top-nav a:hover {
+    color: #00ffcc;
+}
+
+/* User Section */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#settingsBtn {
+    background: linear-gradient(90deg, #00cc99, #00ffcc);
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+#settingsBtn:hover {
+    transform: scale(1.05);
+    background: linear-gradient(90deg, #00ffcc, #00cc99);
+}
+
+/* Content */
+.content {
+    padding: 50px 10%;
+}
+
+/* Slide Settings Panel */
+.settings-panel {
+    position: fixed;
+    top: 0;
+    right: -350px;
+    width: 300px;
+    height: 100%;
+    background: rgba(25, 25, 25, 0.95);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    padding: 25px;
+    transition: right 0.4s ease;
+    z-index: 999;
+}
+
+.settings-panel.active {
+    right: 0;
+}
+
+.settings-panel h2 {
+    margin-top: 0;
+    color: #00ffcc;
+}
+
+.settings-panel ul {
+    list-style: none;
+    padding: 0;
+}
+
+.settings-panel ul li {
+    margin: 20px 0;
+}
+
+.settings-panel ul li a {
+    color: #eee;
+    text-decoration: none;
+    font-size: 17px;
+    transition: color 0.2s;
+}
+
+.settings-panel ul li a:hover {
+    color: #00ffcc;
+}
+
+/* Close Button */
+.close-btn {
+    background: none;
+    border: none;
+    color: #bbb;
+    font-size: 24px;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: #00ffcc;
+}

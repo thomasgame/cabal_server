@@ -12,6 +12,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY docker/database/restore.sh /usr/local/bin/cabal-db-restore
+COPY docker/database/website-init.sql /usr/local/share/cabal/website-init.sql
 RUN chmod 0755 /usr/local/bin/cabal-db-restore
 
 USER root
