@@ -1,0 +1,4 @@
+[MD_Reward_Add]	Group_Number	Clear_Count	Reward_Index_1	Reward_Index_2	Reward_Index_3
+
+[MD_Reward_Add_Value]	Reward_Index	Order	Reward_Type	Reward_PointValue	Reward_ItemKind	Reward_ItemOption	Reward_ItemDuration
+

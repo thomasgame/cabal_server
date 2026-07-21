@@ -1,0 +1,13 @@
+
+
+[MMap]	SpeciesIdx	PosX	PosY	Width	Height	SpwnInterval	SpawnDefault	EvtProperty	EvtMobs	EvtInterval	MissionGate	PerfectDrop	Type	Min	Max	Authority	Server_Mob	Loot_Delay	RegenTime
+
+
+[MissionMMAP]	QDungeonIdx	MMapidx	Cells
+0	4339	0	52:238,53:239,53:240,53:238
+1	4339	25	84:232,84:233,84:234,84:235,84:236,85:237,85:236,85:235,85:234,86:237,86:236,86:235,86:234
+2	4339	26	127:213,127:214,127:215,128:213
+3	4339	41	183:222,182:223,184:221,182:224,184:220,183:221,183:223
+4	4339	42	153:226
+5	4339	61	202:232
+6	4339	62	208:215

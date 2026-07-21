@@ -1,0 +1,12 @@
+.git
+.env
+runtime/
+assets/database/backups/
+assets/game/config/**/*.log
+assets/game/config/**/core.*
+assets/game/config/**/.DS_Store
+assets/game/config/**/Thumbs.db
+**/*.tmp
+**/*.pid
+**/*.sock
+**/__pycache__/

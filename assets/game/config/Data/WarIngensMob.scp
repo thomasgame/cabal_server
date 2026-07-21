@@ -1,0 +1,7 @@
+
+[CoreMob]	MobIdx	MMap
+0	2742	11
+
+[Link_Guardian]	MobIdx	MMap	Linkflag
+0	2742	21	0
+1	2743	22	0

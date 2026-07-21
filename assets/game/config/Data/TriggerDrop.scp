@@ -1,0 +1,8 @@
+[TriggerDrop_MobList]	World_ID	Dungeon_Index	Mob_ID	Order	TriggerDrop_PoolID	TriggerDrop_DamageLimit	TriggerDrop_PoolRate	TriggerDrop_MaxCount
+0	101	4276	2521	0	1	40000	5000	10000
+1	101	4276	2522	0	2	40000	8000	10000
+
+[TriggerDrop_ItemList]	TriggerDrop_PoolID	Order	ItemKind	ItemOption	ItemDrop_Rate	OptionPool_Index	Duration_Index
+0	1	0	33558828	0	400000	0	0
+1	2	0	33558828	0	800000	0	0
+

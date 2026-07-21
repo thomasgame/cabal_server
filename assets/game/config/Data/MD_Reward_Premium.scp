@@ -1,0 +1,4 @@
+[MD_Reward_Main]	Dungeon_Index	DayOfWeek	Clear_Count	Reward_Index
+
+[MD_Reward_Value]	Reward_Index	Order	Reward_Type	Reward_PointValue	Reward_ItemKind	Reward_ItemOption	Reward_ItemDuration
+

@@ -1,0 +1,10 @@
+
+
+[MD_Reward_Add]	Group_Number	Clear_Count	Reward_Index_1	Reward_Index_2	Reward_Index_3
+0	1	1	1	0	0
+1	2	1	1	0	0
+2	3	1	1	0	0
+
+
+[MD_Reward_Add_Value]	Reward_Index	Order	Reward_Type	Reward_PointValue	Reward_ItemKind	Reward_ItemOption	Reward_ItemDuration
+0	1	0	4	0	34082274	1	0

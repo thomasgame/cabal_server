@@ -1,0 +1,86 @@
+name: ${COMPOSE_PROJECT_NAME:-cabal}
+
+services:
+  database:
+    build:
+      context: .
+      dockerfile: docker/database/Dockerfile
+      args:
+        TZ: ${TZ:-Asia/Shanghai}
+    image: cabal/database:2022-cu18
+    user: root
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: ${MSSQL_PID:-Developer}
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      TZ: ${TZ:-Asia/Shanghai}
+    ports:
+      - "${MSSQL_PORT:-1433}:1433"
+    volumes:
+      - sql-data:/var/opt/mssql/data
+      - ./assets/database/backups:/var/opt/mssql/backup:ro
+      - ./runtime/backups:/var/opt/mssql/runtime-backup
+    shm_size: 2gb
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -C -Q "SELECT 1" >/dev/null
+      interval: 10s
+      timeout: 5s
+      start_period: 60s
+      retries: 12
+    networks:
+      - cabal
+
+  database-init:
+    image: cabal/database:2022-cu18
+    restart: "no"
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    entrypoint:
+      - /usr/local/bin/cabal-db-restore
+    volumes:
+      - ./assets/database/backups:/var/opt/mssql/backup:ro
+    networks:
+      - cabal
+
+  game:
+    build:
+      context: .
+      dockerfile: docker/game/Dockerfile
+    image: cabal/game-server:local
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+      database-init:
+        condition: service_completed_successfully
+    environment:
+      TZ: ${TZ:-Asia/Shanghai}
+      MSSQL_HOST: database
+      MSSQL_PORT: "1433"
+      MSSQL_USER: sa
+      MSSQL_PASSWORD: ${MSSQL_SA_PASSWORD}
+      CABAL_PUBLIC_IP: ${CABAL_PUBLIC_IP}
+      CLIENT_VERSION: ${CLIENT_VERSION}
+      NORMAL_CLIENT_MAGIC_KEY: ${NORMAL_CLIENT_MAGIC_KEY}
+      AUTO_START: ${AUTO_START:-true}
+    ports:
+      - "35001-35100:35001-35100/tcp"
+    volumes:
+      - ./runtime/game-config:/etc/cabal
+      - ./runtime/logs:/var/log/cabal
+    stop_grace_period: 3m
+    networks:
+      - cabal
+
+networks:
+  cabal:
+    driver: bridge
+
+volumes:
+  sql-data:

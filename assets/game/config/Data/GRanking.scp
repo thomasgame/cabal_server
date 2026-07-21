@@ -1,0 +1,46 @@
+[GRanking_Limit]	Level
+0	200
+
+[GRanking_Commission]	Commission_Control	Control_Step
+0	2	10
+
+[GRanking_Discount_Rate]	Base_Commission_Discount	Addition_Commission_Discount	WarSales_Discount
+0	350	10	700
+
+[GRanking_Commission_Correction]	Commission_Min	Commission_Max	Factor
+0	0	1999999999	1500
+1	2000000000	4999999999	1400
+2	5000000000	5999999999	1300
+3	6000000000	6999999999	1200
+4	7000000000	7999999999	1100
+5	8000000000	-1	1000
+
+[GRanking_WarSales_Correction]	WarSales_Min	WarSales_Max	Factor
+0	0	29999999	1500
+1	30000000	59999999	1400
+2	60000000	79999999	1300
+3	80000000	89999999	1200
+4	90000000	99999999	1100
+5	100000000	-1	1000
+
+[GRanking_Reward_Limit]	Rank	Demand_Score	Alz_Reward_Limit
+0	1	15000	500000000
+1	2	10000	100000000
+
+[GRanking_Reward_Penalty]	Rank 	Before3Week	Before2Week	Before1Week
+0	1	920	890	860
+1	2	960	940	920
+2	3	984	968	952
+3	4	986	972	958
+4	5	988	976	964
+5	6	990	980	970
+6	7	992	984	976
+7	8	994	988	982
+8	9	996	992	988
+9	10	998	996	994
+
+[GRanking_Item_Reward]	ItemKind	ItemOption
+0	527130	200000000
+
+[GRank_WExp_Bonus]	WExp_Bonus
+0	100

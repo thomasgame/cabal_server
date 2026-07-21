@@ -1,0 +1,30 @@
+[GDungeon]	GDungeonIdx	OpenItem
+0	4349	33556601
+
+[GDDiffculty]	GDungeonIdx	GDungeonDifficulty	DifficultyProb	BoostStep	RewardIdx	MinGuildLv	Minparty	Maxparty
+0	4349	1	20	0	1	6	7	25
+1	4349	2	20	2	2	6	7	25
+2	4349	3	20	3	3	6	7	25
+3	4349	4	20	4	4	6	7	25
+4	4349	5	20	5	5	6	7	25
+
+[GDReward]	RewardIdx	BoxItemIdx	BoxItemOption	BoxPeriodType	BoxDurationIdx	TokenItemIdx	TokenCount	TokenPeriodType	TokenDurationIdx	SkillIdx
+1	1	33556603	1151	0	0	33556602	1	0	0	593
+2	2	33556604	1152	0	0	33556602	2	0	0	593
+3	3	33556605	1153	0	0	33556602	3	0	0	593
+4	4	33556606	1154	0	0	33556602	4	0	0	593
+5	5	33556607	1155	0	0	33556602	5	0	0	593
+
+[GDBoxTime]	TimeProb	OpenTime
+0	20	28200
+1	20	28200
+2	20	28200
+3	20	28200
+4	20	28200
+
+[GDLobbyLimit]	LobbyIdx	LobbyGuildLv	LobbyCharLv
+0	134	1	160
+
+[GDLastReward]	GDungeonIdx	MobIdx	kindIdx	Option	DurationIdx
+0	4349	3169	33555160	15361	0
+

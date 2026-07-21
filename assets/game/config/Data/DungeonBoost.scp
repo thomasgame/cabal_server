@@ -1,0 +1,69 @@
+
+[DungeonBoost_Base]	Min_Step	Max_Step	DBoost_ItemIdx	DBoost_ItemCount	DBoost_DropRate
+0	0	10	33555204	1	40
+
+[DungeonBoost_Level]	level
+0	0
+1	1
+2	2
+3	3
+4	5
+5	8
+6	11
+7	14
+8	17
+9	21
+10	25
+11	29
+12	33
+13	37
+14	41
+15	45
+16	50
+17	55
+18	60
+19	65
+20	70
+
+[DungeonBoost_Fomula]	Params	value	value_type	Smob
+0	M_LEV	1	1	0
+1	M_HP	7	2	0
+2	M_HPRechagR	1	2	0
+3	M_AttacksR	120	1	0
+4	M_DefenseR	2	2	0
+5	M_Defense	2	2	0
+6	M_PhyAttMin	3	2	0
+7	M_PhyAttMax	4	2	0
+8	M_EXP	6	2	0
+9	M_Flee	40	1	0
+10	M_DmgDsc	1	2	0
+11	M_Hit	100	1	0
+12	M_Penetration	40	1	0
+13	M_SAr	180	1	1
+14	M_SatkMin	4	2	1
+15	M_SatkMax	5	2	1
+
+[Elite_Dungeon_Entry]	Daily_Entry_Count
+0	5
+
+[Elite_Dungeon_Boost]	Dungeon_Index	Boost_Index
+0	4119	10
+1	4117	10
+2	4124	10
+3	4118	10
+4	4220	6
+5	4263	4
+
+[Dungeon_Boost_Limit]	Dungeon_Index	Boost_Step	Is_Elite
+0	4276	6	0
+1	4338	4	0
+2	4351	0	0
+3	4352	0	0
+4	4363	0	0
+5	4119	10	1
+6	4117	10	1
+7	4124	10	1
+8	4118	10	1
+9	4220	4	1
+10	4263	6	1
+11	4372	0	0

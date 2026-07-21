@@ -1,0 +1,211 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+env_file="${root}/.env"
+compose_file="${root}/compose.yaml"
+
+compose() {
+  docker compose --project-directory "$root" --env-file "$env_file" -f "$compose_file" "$@"
+}
+
+set_env() {
+  local key="$1" value="$2" temporary
+  temporary="$(mktemp)"
+  awk -v key="$key" -v value="$value" '
+    BEGIN { found=0 }
+    $0 ~ "^" key "=" { print key "=" value; found=1; next }
+    { print }
+    END { if (!found) print key "=" value }
+  ' "$env_file" > "$temporary"
+  mv "$temporary" "$env_file"
+}
+
+require_number() {
+  [[ "$2" =~ ^[0-9]+$ ]] || {
+    echo "$1 must be numeric" >&2
+    exit 2
+  }
+}
+
+env_value() {
+  awk -F= -v key="$1" '
+    $1 == key {
+      sub(/^[^=]*=/, "")
+      sub(/\r$/, "")
+      print
+      exit
+    }
+  ' "$env_file"
+}
+
+validate_env() {
+  [[ -f "$env_file" ]] || {
+    echo "Missing $env_file; copy .env.example to .env and configure it." >&2
+    exit 1
+  }
+  local key value
+  for key in MSSQL_SA_PASSWORD CABAL_PUBLIC_IP CLIENT_VERSION NORMAL_CLIENT_MAGIC_KEY; do
+    value="$(env_value "$key")"
+    if [[ -z "$value" || "$value" == "CHANGE_ME" ]]; then
+      echo "Configure $key in $env_file" >&2
+      exit 1
+    fi
+  done
+  require_number CLIENT_VERSION "$(env_value CLIENT_VERSION)"
+  require_number NORMAL_CLIENT_MAGIC_KEY "$(env_value NORMAL_CLIENT_MAGIC_KEY)"
+}
+
+command="${1:-help}"
+shift || true
+
+case "$command" in
+  up)
+    validate_env
+    mkdir -p "$root/runtime/game-config" "$root/runtime/logs" "$root/runtime/backups"
+    compose up -d --build
+    ;;
+  down)
+    compose down
+    ;;
+  start|stop|restart)
+    compose "$command"
+    ;;
+  status)
+    compose ps
+    compose exec -T game game-control status || true
+    ;;
+  logs)
+    lines="${1:-200}"
+    if [[ -n "${2:-}" ]]; then
+      compose logs -f --tail="$lines" "$2"
+    else
+      compose logs -f --tail="$lines"
+    fi
+    ;;
+  game)
+    action="${1:-status}"
+    service="${2:-all}"
+    compose exec -T game game-control "$action" "$service"
+    ;;
+  channel)
+    channel="${1:-}"
+    action="${2:-status}"
+    require_number channel "$channel"
+    printf -v service 'WorldSvr_01_%02d' "$channel"
+    compose exec -T game game-control "$action" "$service"
+    ;;
+  world-ip)
+    value="${1:?Usage: cabalctl world-ip ADDRESS}"
+    [[ "$value" =~ ^[A-Za-z0-9._:-]+$ ]] || {
+      echo "Invalid address" >&2
+      exit 2
+    }
+    set_env CABAL_PUBLIC_IP "$value"
+    compose up -d --force-recreate game
+    ;;
+  client)
+    version="${1:?Usage: cabalctl client VERSION MAGIC_KEY}"
+    magic_key="${2:?Usage: cabalctl client VERSION MAGIC_KEY}"
+    require_number version "$version"
+    require_number magic_key "$magic_key"
+    set_env CLIENT_VERSION "$version"
+    set_env NORMAL_CLIENT_MAGIC_KEY "$magic_key"
+    compose up -d --force-recreate game
+    ;;
+  db-backup)
+    timestamp="$(date +%Y%m%d-%H%M%S)"
+    mkdir -p "$root/runtime/backups/$timestamp"
+    chmod 0777 "$root/runtime/backups/$timestamp"
+    sql="
+      SET NOCOUNT ON;
+      DECLARE @db sysname,@path nvarchar(4000),@cmd nvarchar(max);
+      DECLARE c CURSOR LOCAL FAST_FORWARD FOR
+        SELECT name FROM sys.databases WHERE database_id>4 AND state_desc='ONLINE';
+      OPEN c; FETCH NEXT FROM c INTO @db;
+      WHILE @@FETCH_STATUS=0
+      BEGIN
+        SET @path=N'/var/opt/mssql/runtime-backup/$timestamp/'+@db+N'.bak';
+        SET @cmd=N'BACKUP DATABASE '+QUOTENAME(@db)+
+          N' TO DISK=N'''+REPLACE(@path,'''','''''')+
+          N''' WITH COPY_ONLY, INIT, COMPRESSION, CHECKSUM; '+
+          N'RESTORE VERIFYONLY FROM DISK=N'''+REPLACE(@path,'''','''''')+
+          N''' WITH CHECKSUM;';
+        EXEC sys.sp_executesql @cmd;
+        FETCH NEXT FROM c INTO @db;
+      END
+      CLOSE c; DEALLOCATE c;"
+    printf '%s\n' "$sql" |
+      compose exec -T database bash -lc \
+        '/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b'
+    echo "Backup written to runtime/backups/$timestamp"
+    ;;
+  db-restore)
+    snapshot="${1:?Usage: cabalctl db-restore SNAPSHOT_DIRECTORY}"
+    confirmation="${2:-}"
+    [[ "$snapshot" =~ ^[A-Za-z0-9._-]+$ ]] || {
+      echo "Invalid snapshot directory" >&2
+      exit 2
+    }
+    backup_dir="$root/runtime/backups/$snapshot"
+    test -d "$backup_dir" || {
+      echo "Missing directory: $backup_dir" >&2
+      exit 1
+    }
+    mapfile -t backups < <(find "$backup_dir" -maxdepth 1 -type f -name '*.bak' -printf '%f\n' | sort)
+    ((${#backups[@]} > 0)) || {
+      echo "No .bak files found in $backup_dir" >&2
+      exit 1
+    }
+    if [[ "$confirmation" != "--yes" ]]; then
+      if [[ ! -t 0 ]]; then
+        echo "Refusing destructive restore without --yes" >&2
+        exit 2
+      fi
+      printf 'Restore %d databases from %s? [y/N] ' "${#backups[@]}" "$snapshot"
+      read -r confirmation
+      [[ "$confirmation" == "y" || "$confirmation" == "Y" ]] || exit 1
+    fi
+    compose stop game
+    for backup in "${backups[@]}"; do
+      database_name="${backup%.bak}"
+      database_name="${database_name//]/]]}"
+      sql="
+        ALTER DATABASE [$database_name] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+        RESTORE DATABASE [$database_name]
+          FROM DISK=N'/var/opt/mssql/runtime-backup/$snapshot/$backup'
+          WITH REPLACE, RECOVERY, CHECKSUM, STATS=10;
+        ALTER DATABASE [$database_name] SET MULTI_USER;"
+      printf '%s\n' "$sql" |
+        compose exec -T database bash -lc \
+          '/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b'
+    done
+    compose start game
+    ;;
+  doctor)
+    validate_env
+    compose config --quiet
+    test -d "$root/assets/game/config"
+    test -x "$root/bin/cabalctl"
+    test "$(find "$root/assets/database/backups" -maxdepth 1 -name '*.bak' | wc -l)" -eq 11
+    echo "Project structure and Compose configuration are valid."
+    ;;
+  help|*)
+    cat <<'USAGE'
+Usage: ./bin/cabalctl COMMAND
+
+  up                         Build and start the complete stack
+  down                       Stop and remove stack containers
+  start|stop|restart         Control Compose services
+  status                     Show containers and Cabal processes
+  logs [LINES] [SERVICE]     Follow logs
+  game ACTION [SERVICE]      Control all or one Cabal process
+  channel NUMBER ACTION      Control a world channel
+  world-ip ADDRESS           Update the advertised client address
+  client VERSION MAGIC_KEY   Update client compatibility values
+  db-backup                  Create verified current database backups
+  db-restore SNAPSHOT [--yes] Restore runtime/backups/SNAPSHOT
+  doctor                     Validate local project prerequisites
+USAGE
+    ;;
+esac
