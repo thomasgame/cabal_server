@@ -30,8 +30,9 @@ chmod +x bin/cabalctl
 2. 创建新的 SQL 数据卷。
 3. 恢复 `assets/database/backups` 中的数据库；空目录且数据卷也为空时初始化会明确失败。
 4. 重建 `adb01` 链接服务器。
-5. 将只读基线配置复制到 `runtime/game-config`。
-6. 幂等应用 IP、客户端版本、MagicKey 和 SQL 连接配置后启动 19 个 Cabal 进程。
+5. 构建 PHP/Apache 网站，并通过容器内网络连接 SQL Server。
+6. 将只读基线配置复制到 `runtime/game-config`。
+7. 幂等应用 IP、客户端版本、MagicKey 和 SQL 连接配置后启动 19 个 Cabal 进程。
 
 数据库已存在时初始化器只检查并跳过恢复，不会覆盖现有数据。重复执行 `./bin/cabalctl up` 不会重建数据库或游戏主容器。
 
@@ -43,7 +44,9 @@ chmod +x bin/cabalctl
 - `CLIENT_VERSION`、`NORMAL_CLIENT_MAGIC_KEY`：客户端兼容参数。
 - `MSSQL_SA_PASSWORD`、`MSSQL_PORT`：SQL Server 凭据与宿主端口。
 - `AUTO_START`：设为 `false` 时只启动 Supervisor，不自动启动游戏进程。
-- `TZ`：两个容器的时区。
+- `WEBSITE_PORT`：网站发布到宿主机的 HTTP 端口，默认 `8080`。
+- `WEBSITE_*`：网站名称、维护状态、管理员账号和各业务数据库名。
+- `TZ`：所有容器的时区。
 
 `MSSQL_SA_PASSWORD` 至少需要 8 个字符，并且应同时包含大写字母、小写字母、数字和符号。由于游戏服务自身的密码解析限制，密码不能包含 `@`、`/` 或 `\`。仅用于本地测试的可用示例：
 
@@ -67,6 +70,7 @@ MSSQL_SA_PASSWORD=CabalDb!2026X
 ## 端口
 
 - `1433/tcp`：SQL Server，可用 `MSSQL_PORT` 修改宿主端口。
+- `8080/tcp`：网站 HTTP 入口，可用 `WEBSITE_PORT` 修改宿主端口。
 - `35001-35100/tcp`：Cabal 服务范围。
 - 默认实际服务包括 `35001`、`35003`、`35011-35015` 等，完整值由源配置决定。
 
@@ -154,6 +158,7 @@ docker compose up -d game
 docker compose ps
 docker compose logs database database-init
 docker compose logs game
+docker compose logs website
 docker compose exec game game-control status
 docker compose exec game ldd /etc/cabal_bin/WorldSvr
 ```

@@ -1,0 +1,48 @@
+ /* Define custom theme colors and font */
+        :root {
+            --cabal-dark: #0f172a; /* slate-900 */
+            --cabal-panel: #1e293b; /* slate-800 */
+            --cabal-neon: #38bdf8; /* sky-400 */
+        }
+        .bg-cabal-dark { background-color: var(--cabal-dark); }
+        .text-cabal-neon { color: var(--cabal-neon); }
+        .bg-cabal-panel { background-color: var(--cabal-panel); }
+        .font-title { font-family: 'Orbitron', sans-serif; }
+        body { font-family: 'Inter', sans-serif; }
+
+        /* Neon Glow Effect for Header */
+        .neon-glow {
+            text-shadow: 0 0 5px var(--cabal-neon), 0 0 15px var(--cabal-neon), 0 0 30px rgba(56, 189, 248, 0.7), 0 0 45px rgba(56, 189, 248, 0.5);
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Improved Rank Row Styling */
+        .rank-row {
+            border-left: 4px solid transparent;
+            cursor: pointer;
+        }
+        .rank-row:hover {
+            background-color: var(--cabal-panel);
+            border-left-color: var(--cabal-neon);
+        }
+        
+        /* Rank 1-3 styling */
+        .shadow-gold { box-shadow: inset 0 0 10px #FFD700; }
+        .shadow-silver { box-shadow: inset 0 0 10px #C0C0C0; }
+        .shadow-bronze { box-shadow: inset 0 0 10px #CD7F32; }
+
+        /* Tab active state */
+        .active-tab {
+            background-color: var(--cabal-neon);
+            color: var(--cabal-dark) !important;
+            font-weight: 700;
+            box-shadow: 0 0 10px var(--cabal-neon);
+            border-color: var(--cabal-neon) !important;
+            transform: scale(1.05);
+        }
+
+        /* Scrollbar styling for tables (Webkit browsers) */
+        .max-h-\[70vh\]::-webkit-scrollbar { width: 8px; }
+        .max-h-\[70vh\]::-webkit-scrollbar-track { background: var(--cabal-panel); }
+        .max-h-\[70vh\]::-webkit-scrollbar-thumb { background: var(--cabal-neon); border-radius: 4px; }
+        .max-h-\[70vh\]::-webkit-scrollbar-thumb:hover { background: #7DD3FC; }

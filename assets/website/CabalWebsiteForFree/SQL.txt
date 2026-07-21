@@ -1,0 +1,424 @@
+ALTER FUNCTION [dbo].[get_style_class](@style INT)
+RETURNS INT
+AS
+BEGIN
+	DECLARE @BattleStyle INT
+    DECLARE @ExtendedBattleStyle INT
+    DECLARE @Result INT
+    
+    SET @BattleStyle = @style & 7
+    
+    SET @ExtendedBattleStyle = (@style >> 23) & 1
+    
+    SET @Result = @BattleStyle | (@ExtendedBattleStyle << 3)
+    
+    RETURN @Result
+END
+===========================================
+UPDATE cabal_character_table
+SET CharacterClass = Server01.dbo.get_style_class(Style)
+===========================================
+
+Server01.dbo.cabal_sp_newchar
+
+**/MODIFIED your own/**
+
+BEGIN
+        INSERT INTO cabal_character_table
+        (
+            [CharacterIdx], [Name],
+            [LEV], [EXP], [STR], [DEX], [INT], [PNT], [Rank], [Alz],
+            [WorldIdx], [Position], [Style], 
+            [HP], [MP], [SP], [SwdPNT], [MagPNT], [RankEXP], [Flags], [WarpBField], [MapsBField], [Reputation],[CharacterClass]
+        )
+        SELECT
+            @CharacterIdx, @Name,
+            [LEV], [EXP], [STR], [DEX], [INT], [PNT], [Rank], [Alz],
+            [WorldIdx], [Position], @Style + 152,
+            [HP], [MP], [SP], SwdPNT + 2100000000, SwdPNT + 2100000000, [RankEXP], [Flags], [WarpBField], [MapsBField], 10000000,@StyleMastery
+        FROM [cabal_new_character_data]
+        WHERE [ClassType] = @StyleMastery
+
+===========================================
+USE [Account]
+GO
+
+/****** Object:  Table [dbo].[DailyLoginRewards]    Script Date: 2/18/2026 4:31:17 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[DailyLoginRewards](
+	[DayNumber] [int] NOT NULL,
+	[ItemName] [nvarchar](100) NULL,
+	[ItemID] [int] NULL,
+	[ItemOpt] [int] NULL,
+	[Duration] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[DayNumber] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[DailyLoginRewards] ADD  DEFAULT ((0)) FOR [ItemOpt]
+GO
+
+ALTER TABLE [dbo].[DailyLoginRewards] ADD  DEFAULT ((0)) FOR [Duration]
+GO
+
+========================================
+
+USE [Account]
+GO
+
+/****** Object:  Table [dbo].[DailyUserProgress]    Script Date: 2/18/2026 4:31:54 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[DailyUserProgress](
+	[UserNum] [int] NOT NULL,
+	[CurrentStreak] [int] NULL,
+	[LastClaimDate] [date] NULL,
+	[TotalClaims] [int] NULL,
+	[LastPlayTimeSnapshot] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[UserNum] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[DailyUserProgress] ADD  DEFAULT ((0)) FOR [CurrentStreak]
+GO
+
+ALTER TABLE [dbo].[DailyUserProgress] ADD  DEFAULT ((0)) FOR [TotalClaims]
+GO
+
+ALTER TABLE [dbo].[DailyUserProgress] ADD  DEFAULT ((0)) FOR [LastPlayTimeSnapshot]
+GO
+
+
+=========================================================
+
+USE [Account]
+GO
+
+/****** Object:  Table [dbo].[OnlineRewardLogs]    Script Date: 2/18/2026 4:33:38 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[OnlineRewardLogs](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[UserNum] [int] NULL,
+	[CharacterName] [nvarchar](50) NULL,
+	[ItemName] [nvarchar](100) NULL,
+	[WonAt] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[OnlineRewardLogs] ADD  DEFAULT (getdate()) FOR [WonAt]
+GO
+
+===================================================
+
+USE [Account]
+GO
+
+/****** Object:  Table [dbo].[OnlineRandomRewards]    Script Date: 2/18/2026 4:33:59 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[OnlineRandomRewards](
+	[RewardID] [int] IDENTITY(1,1) NOT NULL,
+	[ItemName] [nvarchar](100) NULL,
+	[ItemID] [int] NULL,
+	[ItemOpt] [int] NULL,
+	[Duration] [int] NULL,
+	[IsActive] [bit] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[RewardID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[OnlineRandomRewards] ADD  DEFAULT ((0)) FOR [ItemOpt]
+GO
+
+ALTER TABLE [dbo].[OnlineRandomRewards] ADD  DEFAULT ((0)) FOR [Duration]
+GO
+
+ALTER TABLE [dbo].[OnlineRandomRewards] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+
+=======================================================
+
+USE [master]
+GO
+
+/****** Object:  Database [reygie]    Script Date: 2/18/2026 4:34:27 PM ******/
+CREATE DATABASE [reygie]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'reygie', FILENAME = N'/var/opt/mssql/data/reygie.mdf' , SIZE = 73728KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'reygie_log', FILENAME = N'/var/opt/mssql/data/reygie_log.ldf' , SIZE = 204800KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+GO
+
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [reygie].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+
+ALTER DATABASE [reygie] SET ANSI_NULL_DEFAULT OFF 
+GO
+
+ALTER DATABASE [reygie] SET ANSI_NULLS OFF 
+GO
+
+ALTER DATABASE [reygie] SET ANSI_PADDING OFF 
+GO
+
+ALTER DATABASE [reygie] SET ANSI_WARNINGS OFF 
+GO
+
+ALTER DATABASE [reygie] SET ARITHABORT OFF 
+GO
+
+ALTER DATABASE [reygie] SET AUTO_CLOSE OFF 
+GO
+
+ALTER DATABASE [reygie] SET AUTO_SHRINK OFF 
+GO
+
+ALTER DATABASE [reygie] SET AUTO_UPDATE_STATISTICS ON 
+GO
+
+ALTER DATABASE [reygie] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+
+ALTER DATABASE [reygie] SET CURSOR_DEFAULT  GLOBAL 
+GO
+
+ALTER DATABASE [reygie] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+
+ALTER DATABASE [reygie] SET NUMERIC_ROUNDABORT OFF 
+GO
+
+ALTER DATABASE [reygie] SET QUOTED_IDENTIFIER OFF 
+GO
+
+ALTER DATABASE [reygie] SET RECURSIVE_TRIGGERS OFF 
+GO
+
+ALTER DATABASE [reygie] SET  DISABLE_BROKER 
+GO
+
+ALTER DATABASE [reygie] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+
+ALTER DATABASE [reygie] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+
+ALTER DATABASE [reygie] SET TRUSTWORTHY OFF 
+GO
+
+ALTER DATABASE [reygie] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+
+ALTER DATABASE [reygie] SET PARAMETERIZATION SIMPLE 
+GO
+
+ALTER DATABASE [reygie] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+
+ALTER DATABASE [reygie] SET HONOR_BROKER_PRIORITY OFF 
+GO
+
+ALTER DATABASE [reygie] SET RECOVERY FULL 
+GO
+
+ALTER DATABASE [reygie] SET  MULTI_USER 
+GO
+
+ALTER DATABASE [reygie] SET PAGE_VERIFY CHECKSUM  
+GO
+
+ALTER DATABASE [reygie] SET DB_CHAINING OFF 
+GO
+
+ALTER DATABASE [reygie] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+
+ALTER DATABASE [reygie] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+
+ALTER DATABASE [reygie] SET DELAYED_DURABILITY = DISABLED 
+GO
+
+ALTER DATABASE [reygie] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+
+ALTER DATABASE [reygie] SET QUERY_STORE = ON
+GO
+
+ALTER DATABASE [reygie] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+
+ALTER DATABASE [reygie] SET  READ_WRITE 
+GO
+
+
+=====================================================================
+
+USE [reygie]
+GO
+
+/****** Object:  Table [dbo].[PlinkoLogs]    Script Date: 2/18/2026 4:35:30 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[PlinkoLogs](
+	[LogID] [int] IDENTITY(1,1) NOT NULL,
+	[UserNum] [int] NULL,
+	[AccountID] [varchar](50) NULL,
+	[BetAmount] [int] NULL,
+	[TargetRisk] [varchar](20) NULL,
+	[ResultMultiplier] [float] NULL,
+	[WinAmount] [int] NULL,
+	[LogDate] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[LogID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[PlinkoLogs] ADD  DEFAULT (getdate()) FOR [LogDate]
+GO
+
+
+==========================================================
+
+USE [reygie]
+GO
+
+/****** Object:  Table [dbo].[PlinkoSettings]    Script Date: 2/18/2026 4:35:42 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[PlinkoSettings](
+	[RiskType] [varchar](20) NOT NULL,
+	[RTP_Percentage] [int] NULL,
+	[HouseBias] [float] NULL,
+	[IsEnabled] [tinyint] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[RiskType] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[PlinkoSettings] ADD  DEFAULT ((95)) FOR [RTP_Percentage]
+GO
+
+ALTER TABLE [dbo].[PlinkoSettings] ADD  DEFAULT ((0.05)) FOR [HouseBias]
+GO
+
+ALTER TABLE [dbo].[PlinkoSettings] ADD  DEFAULT ((1)) FOR [IsEnabled]
+GO
+
+
+
+
+==============================================
+USE [reygie]
+GO
+
+/****** Object:  Table [dbo].[LimboLogs]    Script Date: 2/18/2026 4:35:58 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[LimboLogs](
+	[LogID] [int] IDENTITY(1,1) NOT NULL,
+	[UserNum] [int] NULL,
+	[AccountID] [varchar](50) NULL,
+	[Currency] [varchar](20) NULL,
+	[BetAmount] [int] NULL,
+	[TargetMultiplier] [float] NULL,
+	[ResultMultiplier] [float] NULL,
+	[WinAmount] [int] NULL,
+	[Status] [varchar](10) NULL,
+	[LogDate] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[LogID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[LimboLogs] ADD  DEFAULT (getdate()) FOR [LogDate]
+GO
+
+
+=====================================
+USE [reygie]
+GO
+
+/****** Object:  Table [dbo].[LimboSettings]    Script Date: 2/18/2026 4:36:09 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[LimboSettings](
+	[SettingID] [int] NOT NULL,
+	[HouseEdge] [float] NULL,
+	[IsEnabled] [tinyint] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[SettingID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[LimboSettings] ADD  DEFAULT ((1)) FOR [SettingID]
+GO
+
+ALTER TABLE [dbo].[LimboSettings] ADD  DEFAULT ((0.20)) FOR [HouseEdge]
+GO
+
+ALTER TABLE [dbo].[LimboSettings] ADD  DEFAULT ((1)) FOR [IsEnabled]
+GO
+
+
+================================================

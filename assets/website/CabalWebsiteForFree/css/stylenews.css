@@ -1,0 +1,89 @@
+:root {
+            --dark-bg: #0d1117;
+            --main-color: #06b6d4; /* Tailwind cyan-500 */
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: #e5e7eb; /* Light gray text */
+            transition: background-color 0.3s;
+        }
+
+        /* Essential for preventing scroll lock when modal is open */
+        .modal-open {
+            overflow: hidden !important;
+        }
+
+        /* Effect: Blur the main content when modal is open */
+        .modal-open #main-content-wrapper {
+            filter: blur(4px); /* Moderate blur effect */
+            pointer-events: none; /* Disable interaction with blurred content */
+            user-select: none;
+            transition: filter 0.3s ease-in-out;
+        }
+
+        /* Modal Overlay - Full screen, fixed position, dark background */
+        #news-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9); /* Slightly more transparent overlay */
+            z-index: 50;
+            overflow-y: auto;
+            /* backdrop-filter is less effective with high opacity, removed for cleaner transition */
+            padding: 20px 0;
+        }
+
+        /* Custom "Tech" Border Effect (used on cards and modal content) */
+        .tech-border {
+            border: 1px solid rgba(30, 41, 59, 0.5); /* Slate-800 subtle border */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border-radius: 0.75rem; /* rounded-xl */
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .tech-border:hover {
+            border-color: var(--main-color);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+        }
+
+        /* Styling for content injected via JS (the fullContent) */
+        .full-content-display h4 {
+            color: #22d3ee; /* cyan-400 */
+            font-size: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid #374151; /* gray-700 */
+            font-weight: 700;
+        }
+
+        .full-content-display ul {
+            padding-left: 1.5rem;
+            list-style: disc;
+        }
+
+        .full-content-display p, .full-content-display li {
+            line-height: 1.75;
+        }
+
+        /* Responsive Modal Container: Centered and capped width */
+        #modal-content > div {
+            max-width: 100%;
+            margin: 0 auto;
+            min-height: 100vh; /* Ensure it covers the full viewport height if content is short */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        
+        /* Desktop/Tablet size for modal content */
+        @media (min-width: 640px) {
+            #modal-content > div {
+                max-width: 800px;
+                min-height: auto; /* Allow content to dictate height */
+            }
+        }

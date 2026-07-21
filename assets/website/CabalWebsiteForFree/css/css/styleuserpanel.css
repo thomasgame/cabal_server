@@ -1,0 +1,515 @@
+:root {
+            --primary-bg: #f8f9fa; /* Light background */
+            --secondary-bg: #ffffff; /* Card/element background */
+            --tertiary-bg: #e9ecef; /* Hover/active background */
+            --text-color: #212529; /* Standard text color */
+            --text-muted: #6c757d; /* Muted text */
+            --border-color: rgba(0, 0, 0, 0.1); /* Subtle border color */
+            --accent-color: #007bff; /* Accent color (blue) */
+            --menu-item-hover: #e9ecef; /* Menu item hover */
+            --menu-item-active-bg: #007bff; /* Active menu item background */
+            --menu-item-active-text: #ffffff; /* Active menu item text color */
+            --menu-icon-color: #495057; /* Menu icon color */
+            --topbar-bg: #ffffff; /* Topbar background */
+            --header-title-border: #dee2e6; /* Header title border color */
+            --form-control-bg: #ffffff;
+            --form-control-text: #212529;
+            --form-control-border: #ced4da;
+        }
+        /* Dark mode styles - activated by 'dark-mode' class on body */
+        body.dark-mode {
+            --primary-bg: #1e1e2d; /* Fundo principal escuro */
+            --secondary-bg: #282a3d; /* Fundo de elementos como cards */
+            --tertiary-bg: #32354a; /* Fundo de hover/active */
+            --text-color: #c9c9d6; /* Cor do texto padrão */
+            --text-muted: #888aa0; /* Texto mais apagado */
+            --border-color: rgba(255, 255, 255, 0.08); /* Cor da borda sutil */
+            --accent-color: #ffc107; /* Cor de realce (amarelo/laranja) */
+            --menu-item-hover: #32354a; /* Fundo do item de menu ao passar o mouse */
+            --menu-item-active-bg: #4a4d65; /* Fundo do item de menu ativo */
+            --menu-item-active-text: #c9c9d6; /* Active menu item text color in dark mode */
+            --menu-icon-color: #c9c9d6; /* Cor dos ícones do menu */
+            --topbar-bg: #282a3d; /* Cor da barra superior */
+            --header-title-border: #3c405a; /* Darker border for header title */
+            --form-control-bg: #32354a;
+            --form-control-text: #c9c9d6;
+            --form-control-border: #4a4d65;
+        }
+
+        body {
+            font-family: Arial, sans-serif; /* Fonte mais comum e compacta */
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            overflow-x: hidden; /* Evita scroll horizontal */
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+            font-size: 0.875rem; /* Base font size */
+        }
+
+        /* Estrutura principal */
+        #wrapper {
+            display: flex;
+            height: 100vh;
+        }
+
+        .app-menu {
+            width: 260px; /* Largura fixa do menu lateral */
+            flex-shrink: 0;
+            background-color: var(--secondary-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: relative; /* Para o simplebar funcionar corretamente */
+            transition: all 0.2s ease-in-out; /* Adicionado para transição do width */
+        }
+        .app-menu .simplebar-content-wrapper {
+            padding: 0; /* Remove padding extra do simplebar */
+        }
+
+        .content-page {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* Permite scroll no conteúdo principal */
+            background-color: var(--primary-bg);
+            transition: all 0.2s ease-in-out; /* Adicionado para transição do margin */
+        }
+
+        .navbar-custom {
+            background-color: var(--topbar-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem; /* Ajustado padding */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px; /* Altura do topbar reduzida */
+            flex-shrink: 0; /* Não permite que o topbar encolha */
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Topbar Brand Logo */
+        .logo-box {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo-box .logo-lg {
+            height: 65px; /* Ajustado para um tamanho maior */
+            display: block; /* Visível por padrão */
+            transition: height 0.3s ease;
+        }
+        .logo-box .logo-sm {
+            height: 65px; /* Ajustado para um tamanho maior */
+            display: none; /* Escondido por padrão */
+            transition: height 0.3s ease;
+        }
+
+
+        /* Sidebar Menu Toggle Button */
+        .button-toggle-menu {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.25rem; /* Reduzido o tamanho do ícone */
+            cursor: pointer;
+            padding: 0.3rem 0.5rem; /* Ajustado padding */
+            transition: color 0.3s ease;
+            margin-left: 10px; /* Espaçamento do logo */
+        }
+
+        /* Topbar Menu Items - Right aligned group */
+        .topbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Reduzido o espaçamento entre itens */
+        }
+
+        .topbar-menu .nav-link {
+            color: var(--text-color);
+            font-size: 0.9rem; /* Reduzido o tamanho da fonte */
+            transition: all 0.3s ease;
+            padding: 0.5rem 0.75rem; /* Ajustado padding */
+        }
+
+        .topbar-menu .nav-link:hover {
+            color: var(--accent-color);
+        }
+
+        .topbar-menu .nav-user img {
+            width: 30px; /* Reduzido o tamanho do avatar */
+            height: 30px;
+            object-fit: cover;
+        }
+
+        .topbar-menu .nav-user span {
+            color: var(--text-color);
+            font-size: 0.85rem; /* Reduzido o tamanho da fonte */
+        }
+
+        .topbar-menu .dropdown-menu {
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1); /* Sombra mais suave */
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            font-size: 0.85rem; /* Reduzido o tamanho da fonte no dropdown */
+        }
+
+        .topbar-menu .dropdown-item {
+            color: var(--text-color);
+            padding: 0.5rem 1rem; /* Ajustado padding */
+        }
+
+        .topbar-menu .dropdown-item:hover,
+        .topbar-menu .dropdown-item:focus {
+            background-color: var(--tertiary-bg);
+            color: var(--accent-color);
+        }
+
+        .topbar-menu .dropdown-item i {
+            margin-right: 0.4rem; /* Reduzido margin */
+            font-size: 1rem; /* Ajustado tamanho do ícone */
+            color: var(--menu-icon-color);
+        }
+        .topbar-menu .dropdown-item:hover i {
+             color: var(--accent-color);
+        }
+
+        /* Menu Lateral - User Box */
+        .user-box {
+            padding: 15px; /* Reduzido padding */
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px; /* Reduzido margin */
+            transition: border-color 0.3s ease;
+            text-align: center; /* Centraliza conteúdo do user-box */
+        }
+
+        .user-box img {
+            border: 2px solid var(--accent-color); /* Borda de destaque no avatar */
+            margin-bottom: 8px; /* Reduzido margin */
+            width: 70px; /* Reduzido o tamanho do avatar */
+            height: 70px;
+            display: block; /* Para centralizar com margin: auto */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .user-box .h5 {
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 1rem; /* Reduzido tamanho da fonte */
+            white-space: nowrap; /* Evita quebra de linha */
+            overflow: hidden; /* Esconde overflow */
+            text-overflow: ellipsis; /* Adiciona "..." se o texto for muito longo */
+        }
+
+        /* Menu Lateral - Navegação */
+        .app-menu .menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1; /* Permite que o menu ocupe o espaço disponível */
+        }
+
+        .app-menu .menu-title {
+            color: var(--text-muted);
+            font-size: 0.75rem; /* Reduzido o tamanho da fonte */
+            text-transform: uppercase;
+            padding: 10px 20px 5px 20px; /* Ajustado padding */
+            letter-spacing: 0.05em;
+            transition: color 0.3s ease;
+        }
+
+        .app-menu .menu-item {
+            margin-bottom: 3px; /* Reduzido margin */
+        }
+
+        .app-menu .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 8px 20px; /* Reduzido padding */
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.2s ease-in-out;
+            font-size: 0.9rem; /* Reduzido tamanho da fonte */
+            white-space: nowrap; /* Impede quebra de linha no texto do menu */
+        }
+
+        .app-menu .menu-link:hover {
+            background-color: var(--menu-item-hover);
+            color: var(--accent-color);
+        }
+
+        .app-menu .menu-link.active {
+            background-color: var(--menu-item-active-bg);
+            color: var(--menu-item-active-text);
+        }
+        .app-menu .menu-link.active .menu-icon {
+            color: var(--menu-item-active-text); /* Ícone ativo com a mesma cor do texto ativo */
+        }
+
+
+        .app-menu .menu-icon {
+            margin-right: 12px; /* Reduzido margin */
+            font-size: 1rem; /* Reduzido tamanho do ícone */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--menu-icon-color);
+            min-width: 20px; /* Garante que o ícone tenha um tamanho mínimo para alinhamento */
+            transition: margin 0.2s ease-in-out; /* Adicionado transição para margin */
+        }
+
+        /* Conteúdo Principal */
+        .content {
+            padding: 20px; /* Reduzido padding */
+            flex-grow: 1;
+        }
+
+        .page-title-box {
+            padding-bottom: 10px; /* Reduzido padding */
+            margin-bottom: 15px; /* Reduzido margin */
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+
+        .page-title {
+            color: var(--text-color);
+            font-size: 1.25rem; /* Reduzido tamanho da fonte */
+            margin-bottom: 0;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Sombra mais suave */
+            color: var(--text-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-body {
+            padding: 1.25rem; /* Reduzido padding */
+        }
+
+        /* Headers de Card (para formulários e seções) */
+        .mb-3.header-title {
+            padding-bottom: 10px;
+            margin-bottom: 20px !important;
+            border-bottom: 1px solid var(--header-title-border);
+            text-align: left; /* Garante que o texto do header-title fique à esquerda */
+        }
+        .mb-3.header-title h5 {
+            margin-bottom: 0;
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+        .mb-3.header-title i {
+            margin-right: 8px; /* Espaçamento entre ícone e texto do título */
+            color: var(--menu-icon-color); /* Cor do ícone no header */
+        }
+
+
+        /* Informações da Conta no Card Principal */
+        .d-flex img.avatar-lg {
+            width: 70px; /* Reduzido o tamanho do avatar */
+            height: 70px;
+            border: 2px solid var(--accent-color);
+        }
+        .d-flex h4.mt-0 {
+            color: var(--text-color);
+            font-size: 1.25rem; /* Reduzido tamanho da fonte */
+        }
+        .text-uppercase.bg-light {
+            background-color: var(--tertiary-bg) !important;
+            color: var(--text-color) !important;
+            padding: 0.6rem !important; /* Reduzido padding */
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-size: 0.9rem; /* Reduzido tamanho da fonte */
+        }
+        .font-13.text-muted {
+            color: var(--text-muted) !important;
+            font-weight: 500;
+            font-size: 0.8rem; /* Reduzido tamanho da fonte */
+        }
+        p.mb-3 {
+            color: var(--text-color);
+            font-size: 0.9rem; /* Reduzido tamanho da fonte */
+        }
+
+        /* Dashboard Cards */
+        .dashboard-card {
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.8rem; /* Reduzido padding */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dashboard-card h6 {
+            font-size: 0.8rem; /* Reduzido tamanho da fonte */
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--text-muted);
+        }
+        .dashboard-card .fs-4, .dashboard-card .fs-5, .dashboard-card .fs-6 {
+            font-size: 1.5rem !important; /* Ajustado para ser menor */
+            color: var(--text-color);
+            font-weight: 600;
+        }
+        /* Specific sizes for admin numbers */
+        .dashboard-card .fs-4.text-primary { font-size: 1.8rem !important; }
+        .dashboard-card .fs-5.text-light { font-size: 1.3rem !important; }
+        .dashboard-card .fs-4.text-danger { font-size: 1.8rem !important; }
+        .dashboard-card .fs-5.text-info { font-size: 1.3rem !important; }
+        .dashboard-card .fs-6 { font-size: 1rem !important; } /* For Last Login/Status */
+
+        /* Form Controls */
+        .form-control, .form-select {
+            background-color: var(--form-control-bg);
+            color: var(--form-control-text);
+            border: 1px solid var(--form-control-border);
+            transition: all 0.2s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: var(--form-control-bg); /* Keep same bg on focus */
+            color: var(--form-control-text);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25); /* Bootstrap default blue shadow */
+        }
+        body.dark-mode .form-control:focus, body.dark-mode .form-select:focus {
+             box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25); /* Dark mode accent color shadow */
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--topbar-bg);
+            border-top: 1px solid var(--border-color);
+            padding: 15px 0; /* Reduzido padding */
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem; /* Reduzido tamanho da fonte */
+            flex-shrink: 0;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .footer .footer-logo {
+            font-size: 1.2rem; /* Reduzido tamanho da fonte */
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+        }
+
+        .footer .footer-links a {
+            display: block;
+            color: var(--text-color);
+            text-decoration: none;
+            margin-bottom: 3px;
+            transition: color 0.2s ease;
+        }
+
+        .footer h6 {
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .footer hr {
+            border-color: var(--border-color);
+            opacity: 0.2;
+        }
+
+        /* Ajustes para o Discord iframe */
+        .footer iframe {
+            border-radius: 8px;
+        }
+
+        /* ===================================== */
+        /* Sidebar Condensed Styles (New)        */
+        /* ===================================== */
+
+        body.sidebar-condensed .app-menu {
+            width: 70px; /* Largura menor para o menu colapsado */
+        }
+
+        body.sidebar-condensed .app-menu .menu-text {
+            display: none; /* Esconde o texto dos itens do menu */
+        }
+
+        body.sidebar-condensed .app-menu .menu-icon {
+            margin-right: 0; /* Remove margem à direita do ícone */
+            justify-content: center; /* Centraliza o ícone */
+            font-size: 1.25rem; /* Aumenta um pouco o tamanho do ícone para visibilidade */
+        }
+
+        /* Ajustes para o user-box no modo colapsado */
+        body.sidebar-condensed .user-box {
+            padding: 10px 0; /* Padding menor */
+        }
+        body.sidebar-condensed .user-box img {
+            width: 40px; /* Avatar menor */
+            height: 40px;
+            margin-bottom: 5px;
+        }
+        body.sidebar-condensed .user-box .h5,
+        body.sidebar-condensed .user-box .dropdown {
+            display: none; /* Esconde nome do usuário e dropdown */
+        }
+
+        /* Esconde títulos de seção do menu */
+        body.sidebar-condensed .app-menu .menu-title {
+            display: none;
+        }
+
+        /* Ajusta padding dos links para alinhar ícones */
+        body.sidebar-condensed .app-menu .menu-link {
+            padding: 8px 10px; /* Ajusta padding para centralizar ícone */
+        }
+        body.sidebar-condensed .app-menu .menu-link.active {
+             background-color: var(--menu-item-active-bg); /* Mantém cor de fundo do ativo */
+        }
+        body.sidebar-condensed .app-menu .menu-link.active .menu-icon {
+            color: var(--menu-item-active-text); /* Garante que o ícone ativo também mude de cor */
+        }
+
+
+        /* Ajusta o topo do painel e o logo quando o sidebar está colapsado */
+        body.sidebar-condensed .navbar-custom .topbar-left {
+            width: 70px; /* Largura do topbar-left corresponde ao sidebar colapsado */
+            justify-content: center; /* Centraliza o conteúdo (logo e botão) */
+        }
+        body.sidebar-condensed .navbar-custom .logo-box .logo-lg {
+            display: none; /* Esconde o logo grande */
+        }
+        body.sidebar-condensed .navbar-custom .logo-box .logo-sm {
+            display: block; /* Mostra o logo pequeno */
+        }
+        body.sidebar-condensed .navbar-custom .button-toggle-menu {
+            /* Talvez não seja necessário ajustar muito aqui, pois o logo-sm já será menor */
+            margin-left: 0; /* Remove a margem do botão se o logo-sm for usado */
+        }
+
+        /* Ajusta a margem do conteúdo principal */
+        body.sidebar-condensed .content-page {
+            margin-left: 0; /* Reset ou ajuste se necessário */
+        }
+        /* O `flex-grow: 1` em `content-page` e `display: flex` em `wrapper`
+           geralmente lidam com o espaço automaticamente, mas um `margin-left`
+           poderia ser necessário se o wrapper não for o flex container direto */
+
+        /* Adiciona tooltip para ícones quando o sidebar está colapsado */
+        body.sidebar-condensed .app-menu .menu-link .menu-icon {
+            position: relative;
+        }
+        body.sidebar-condensed .app-menu .menu-link {
+            /* Isso pode sobrepor o simplebar, idealmente o tippy.js cuidaria disso */
+            /* tippy já tem sua própria lógica, não precisamos de CSS extra para o tooltip aqui */
+        }

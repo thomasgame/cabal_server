@@ -1,0 +1,234 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Press Start 2P', cursive;
+    background-image: url(../images/maintenance/bg_170926_main.jpg);
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Starry sky animation */
+.night{
+    position: absolute;/* position: relative; */
+    width: 100%;
+    height: 100%;
+    transform: rotateZ(40deg);
+  }
+  
+  .star{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 4px;
+    background: linear-gradient(-45deg, #5F91FF, rgba(0, 0, 255, 0));
+    border-radius: 999px;
+    filter: drop-shadow(0 0 6px #699BFF);
+    animation: tail 3s ease-in-out infinite,
+               falling 3s ease-in-out infinite;
+  }
+  
+  @keyframes tail{
+    0%{
+      width: 0;
+    }
+    30%{
+      width: 100px;
+    }
+    100%{
+      width: 0;
+    }
+  }
+  
+  @keyframes falling{
+    0%{
+      transform: translateX(0);
+    }
+    100%{
+      transform: translateX(300px);
+    }
+  }
+  
+  .star::before, .star::after{
+    content: '';
+    position: absolute;
+    top: calc(50% - 2px);
+    right: 0;
+    height: 4px;
+    background: linear-gradient(-45deg, rgba(0, 0, 255, 0), #5F91FF, rgba(0, 0, 255, 0));
+    border-radius: 100%;
+    transform: translateX(50%) rotateZ(45deg);
+    animation: shining 3s ease-in-out infinite;
+  }
+  
+  @keyframes shining{
+    0%{
+      width: 0;
+    }
+    50%{
+      width: 30px;
+    }
+    100%{
+      width: 0;
+    }
+  }
+  
+  .star::after{
+    transform: translateX(50%) rotateZ(-45deg);
+  }
+  
+  .star:nth-child(1){
+    top: calc(50% - 100px);
+    left: calc(50% - 250px);
+    animation-delay: 1s;
+  }
+  
+  .star:nth-child(1)::before, .star:nth-child(1)::after{
+    animation-delay: 1s;
+  }
+  
+  .star:nth-child(2){
+    top: calc(50% - 50px);
+    left: calc(50% - 200px);
+    animation-delay: 1.2s;
+  }
+  
+  .star:nth-child(2)::before, .star:nth-child(2)::after{
+    animation-delay: 1.2s;
+  }
+  
+  .star:nth-child(3){
+    top: calc(50% - 0px);
+    left: calc(50% - 150px);
+    animation-delay: 1.4s;
+  }
+  
+  .star:nth-child(3)::before, .star:nth-child(3)::after{
+    animation-delay: 1.4s;
+  }
+  
+  .star:nth-child(4){
+    top: calc(50% - -50px);
+    left: calc(50% - 200px);
+    animation-delay: 1.6s;
+  }
+  
+  .star:nth-child(4)::before, .star:nth-child(4)::after{
+    animation-delay: 1.6s;
+  }
+  
+  .star:nth-child(5){
+    top: calc(50% - -100px);
+    left: calc(50% - 250px);
+    animation-delay: 1.8s;
+  }
+  
+  .star:nth-child(5)::before, .star:nth-child(5)::after{
+    animation-delay: 1.8s;
+  }
+
+.container {
+    text-align: center;
+    animation: fadeIn 1.5s ease-out;
+}
+
+h1 {
+    font-size: 3em;
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    color: #f39c12;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 1.5em;
+    font-weight: 300;
+    color: #bdc3c7;
+    margin-bottom: 20px;
+}
+
+/* Countdown styling */
+.countdown {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.countdown-item {
+    background: linear-gradient(145deg, rgba(0, 0, 0, 0.8), rgba(20, 20, 20, 0.8));
+    border: 2px solid #f39c12;
+    border-radius: 10px;
+    padding: 15px 30px;
+    width: 150px;
+    text-align: center;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+    color: #f39c12;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    animation: glow 1.5s ease-out infinite alternate;
+    cursor: pointer;
+}
+
+.countdown-item .time {
+    font-size: 3em;
+    color: #fff;
+    text-shadow: 0 0 10px #f39c12, 0 0 20px #f39c12, 0 0 30px #e74c3c;
+}
+
+.countdown-item .label {
+    font-size: 24px;
+    font-weight: normal;
+    color: #bdc3c7;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Maintenance icon animation */
+.maintenance-icon {
+    font-size: 6em;
+    margin-bottom: 20px;
+    color: #f39c12;
+    animation: rotate 3s infinite linear, glow 1.5s ease-out infinite alternate;
+}
+
+/* Progress bar */
+.progress-bar-container {
+    width: 80%;
+    height: 20px;
+    background: #333;
+    border-radius: 10px;
+    margin-top: 30px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background: #f39c12;
+    border-radius: 10px;
+    transition: width 1s ease-in-out;
+}
+
+/* Countdown Animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes glow {
+    0% { text-shadow: 0 0 5px #f39c12, 0 0 10px #f39c12, 0 0 15px #f39c12; }
+    100% { text-shadow: 0 0 15px #e74c3c, 0 0 25px #e74c3c, 0 0 35px #e74c3c; }
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

@@ -1,0 +1,256 @@
+/* --- Base Styles --- */
+body {
+    width: 100%;
+    background: url(../images/body-bg-top.jpg) center top no-repeat, url(../images/body-bg-bottom.jpg) center bottom no-repeat;
+    background-color: #000000;
+    font-family: 'Segoe UI', Arial, sans-serif; /* Fonte mais moderna e limpa */
+    font-size: 14px;
+    color: #E0E0E0; /* Cor de texto geral mais clara */
+}
+a {
+    transition: all 0.3s ease;
+    color: #4CAF50; /* Cor verde/azul para links, pode ser ajustado */
+    text-decoration: none;
+}
+a:hover,
+button:hover {
+    filter: brightness(120%);
+}
+p {
+    margin-bottom: 10px;
+}
+h1, h2, h3 {
+    color: #FFFFFF;
+    margin-bottom: 20px;
+    line-height: 24px;
+}
+input, textarea, select {
+    background: #2b2b2b; /* Fundo cinza escuro para inputs */
+    border-radius: 5px;
+    color: #FFFFFF;
+    font-size: 14px;
+    padding: 10px 15px;
+    border: 1px solid #444444; /* Borda sutil */
+}
+button {
+    background: #4CAF50; /* Botões em destaque */
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+button:hover {
+    background-color: #45a049;
+}
+
+
+/* --- Global Layout Classes (Se precisar) --- */
+.flex-s-cs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Alinhar itens ao centro verticalmente */
+}
+.account {
+    padding: 20px 0; /* Mais padding para a seção da conta */
+}
+
+/* --- Seções do Painel de Usuário e Personagens (Modernizado) --- */
+
+/* Wrapper geral para seções de painel (como Personagens, etc.) */
+.panel-section-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px; /* Mais espaçamento entre os painéis */
+    justify-content: center; /* Centraliza os painéis */
+    padding: 30px 0;
+}
+
+/* Container principal para cada painel */
+.panel-wrapper {
+    background-color: #262626; /* Fundo cinza escuro mais limpo */
+    width: 320px; /* Largura um pouco maior para cada painel */
+    border-radius: 10px; /* Cantos mais arredondados */
+    box-shadow: 0 8px 25px rgba(0,0,0,0.6); /* Sombra mais suave e espalhada */
+    overflow: hidden;
+    border: 1px solid #333333; /* Borda mais discreta */
+}
+
+/* Estilo para o título de cada painel */
+.panel-title {
+    background-color: #1a1a1a; /* Fundo do título ainda mais escuro */
+    padding: 18px 25px;
+    border-bottom: 1px solid #3a3a3a; /* Borda inferior mais sutil */
+    text-align: center; /* Centraliza o título */
+}
+.panel-title span {
+    color: #FFFFFF;
+    font-size: 24px; /* Título maior e em negrito */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px; /* Espaçamento entre letras */
+}
+
+/* Área de conteúdo dentro do painel */
+.panel-content-area {
+    padding: 15px; /* Mais padding interno */
+}
+
+/* Estilos para os itens da lista (personagens) */
+#character_list {
+    list-style: none; /* Remove marcadores de lista */
+    padding: 0;
+    margin: 0;
+}
+
+.panel-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 8px; /* Espaçamento entre os itens */
+    background-color: #2e2e2e; /* Fundo dos itens levemente mais claro */
+    border-radius: 8px; /* Cantos arredondados para itens */
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #3a3a3a; /* Borda suave */
+}
+
+.panel-item:last-child {
+    margin-bottom: 0; /* Remove margem do último item */
+}
+
+.panel-item:hover {
+    background-color: #383838; /* Fundo mais claro no hover */
+    transform: translateY(-3px); /* Efeito de "levantar" */
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4); /* Sombra mais pronunciada no hover */
+}
+
+/* Estilo do link dentro do item */
+.panel-item a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    color: #FFFFFF; /* Nomes em branco */
+    font-size: 16px; /* Tamanho da fonte do nome */
+    font-weight: 500;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-decoration: none;
+}
+
+/* Estilo para o contêiner do ícone da classe */
+#icon {
+    width: 55px; /* Ícone um pouco maior */
+    height: 55px;
+    background-size: cover; /* Garante que a imagem preencha o espaço */
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 20px; /* Mais espaçamento */
+    border-radius: 50%; /* Torna o ícone circular */
+    border: 2px solid #4CAF50; /* Borda colorida para destaque */
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); /* Brilho suave */
+    flex-shrink: 0; /* Evita que o ícone encolha */
+}
+
+/* Estilos para o texto (nome e level) dentro do item do painel */
+.panel-item span {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.panel-item p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.panel-item p:first-child {
+    font-size: 18px; /* Nome do personagem maior */
+    color: #FFFFFF;
+    font-weight: 600;
+}
+
+.panel-item p:last-child {
+    font-size: 13px; /* Level */
+    color: #BBBBBB; /* Cor mais clara para o level */
+}
+
+/* --- Estilos para o tooltip (mantidos do seu original, ajuste se necessário) --- */
+.tooltip-sweet-strong {
+    /* Mantenha os estilos originais ou adapte para o novo tema */
+}
+
+/* --- Outras classes que você pode ter (adapte ou remova se não usar) --- */
+#inputtext, #registerInput {
+    background-color: #2b2b2b;
+    border: 1px solid #444444;
+    color: #FFFFFF;
+    /* ... outros estilos ... */
+}
+.ranking-section {
+  padding-top: 100px;
+}
+/* General Card Styling (adjust to match your character card) */
+.theme-card-bg {
+    background-color: #2a2a2a; /* Example: A dark grey background, similar to the panel's dark theme */
+    color: #f8f9fa; /* Light text color for contrast */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+.border-theme-accent {
+    border: 1px solid #ffc107; /* Example: A thin, accent-colored border (yellow, similar to your "Personagem Selecionado" title) */
+    border-radius: 0.5rem; /* Match the border-radius of your character card if it has one */
+}
+
+/* Button Styling (adjust colors to fit your theme) */
+.btn-theme-primary {
+    background-color: #0d6efd; /* Bootstrap primary blue */
+    color: #fff;
+    border-color: #0d6efd;
+    transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+.btn-theme-primary:hover {
+    background-color: #0b5ed7; /* Darker shade on hover */
+    border-color: #0b5ed7;
+}
+
+.btn-theme-warning {
+    background-color: #ffc107; /* Bootstrap warning yellow */
+    color: #212529; /* Dark text for better contrast on yellow */
+    border-color: #ffc107;
+    transition: background-color 0.3s ease;
+}
+
+.btn-theme-warning:hover {
+    background-color: #ffcd39;
+    border-color: #ffcd39;
+}
+
+.btn-theme-success {
+    background-color: #198754; /* Bootstrap success green */
+    color: #fff;
+    border-color: #198754;
+    transition: background-color 0.3s ease;
+}
+
+.btn-theme-success:hover {
+    background-color: #157347;
+    border-color: #157347;
+}
+
+/* Ensure text in card body is visible */
+.card-text.text-light-emphasis {
+    color: rgba(248, 249, 250, 0.75) !important; /* Adjust if needed to ensure visibility against dark background */
+}
+
+/* If your character card has specific font sizes or padding, replicate them here */
+/* For example, if your character name is larger: */
+.card-title {
+    font-size: 1.25rem; /* Or whatever size your character card title is */
+}
+
+.card-subtitle {
+    font-size: 1rem;
+}

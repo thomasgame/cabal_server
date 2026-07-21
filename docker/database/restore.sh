@@ -11,6 +11,12 @@ connection=(
   -b
 )
 
+WEBSITE_DB_SITE="${WEBSITE_DB_SITE:-reygie}"
+if [[ ! "$WEBSITE_DB_SITE" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then
+  echo "Invalid WEBSITE_DB_SITE database name: $WEBSITE_DB_SITE" >&2
+  exit 1
+fi
+
 for _ in $(seq 1 120); do
   if "${connection[@]}" -Q "SELECT 1" >/dev/null 2>&1; then
     break
@@ -57,6 +63,10 @@ for backup in "${backups[@]}"; do
       THROW 51000, N'Database ${database_name} is not online', 1;
   "
 done
+
+"${connection[@]}" \
+  -v "WebsiteDatabase=$WEBSITE_DB_SITE" \
+  -i /usr/local/share/cabal/website-init.sql
 
 "${connection[@]}" -Q "
   IF EXISTS (SELECT 1 FROM sys.servers WHERE name = N'adb01')

@@ -1,0 +1,13 @@
+.spec-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 2px solid transparent;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .spec-item.detected {
+            background: rgba(59, 130, 246, 0.05);
+            border-left: 2px solid #3b82f6;
+            transform: translateX(4px);
+        }
+        .hw-val {
+            transition: all 0.3s ease;
+        }

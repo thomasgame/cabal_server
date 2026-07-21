@@ -1,0 +1,17 @@
+  /* Custom styles for the tech-border look */
+        .tech-border {
+            position: relative;
+            border: 1px solid #22d3ee; /* cyan-400 */
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
+        }
+        .tech-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #22d3ee, transparent, #22d3ee);
+            z-index: -1;
+            opacity: 0.3;
+        }

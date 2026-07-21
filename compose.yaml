@@ -41,6 +41,7 @@ services:
         condition: service_healthy
     environment:
       MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      WEBSITE_DB_SITE: ${WEBSITE_DB_SITE:-reygie}
     entrypoint:
       - /usr/local/bin/cabal-db-restore
     volumes:
@@ -75,6 +76,46 @@ services:
       - ./runtime/game-config:/etc/cabal
       - ./runtime/logs:/var/log/cabal
     stop_grace_period: 3m
+    networks:
+      - cabal
+
+  website:
+    build:
+      context: .
+      dockerfile: docker/website/Dockerfile
+      args:
+        TZ: ${TZ:-Asia/Shanghai}
+    image: cabal/website:local
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+      database-init:
+        condition: service_completed_successfully
+    environment:
+      TZ: ${TZ:-Asia/Shanghai}
+      MSSQL_HOST: database
+      MSSQL_PORT: "1433"
+      MSSQL_USER: sa
+      MSSQL_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_DATABASE: ${WEBSITE_MSSQL_DATABASE:-Account}
+      WEBSITE_TITLE: ${WEBSITE_TITLE:-CABAL ONLINE}
+      WEBSITE_NAME_PRIMARY: ${WEBSITE_NAME_PRIMARY:-CABAL}
+      WEBSITE_NAME_SECONDARY: ${WEBSITE_NAME_SECONDARY:-ONLINE}
+      WEBSITE_LOGO: ${WEBSITE_LOGO:-images/logo-vertu.png}
+      WEBSITE_SERVER_LABEL: ${WEBSITE_SERVER_LABEL:-New Server}
+      WEBSITE_DOWNLOAD_LABEL: ${WEBSITE_DOWNLOAD_LABEL:-Download Now!}
+      WEBSITE_MAINTENANCE: ${WEBSITE_MAINTENANCE:-0}
+      WEBSITE_MAINTENANCE_UNTIL: ${WEBSITE_MAINTENANCE_UNTIL:-January 24, 2026 15:30:00}
+      WEBSITE_ADMIN_USERNAMES: ${WEBSITE_ADMIN_USERNAMES:-}
+      WEBSITE_DB_ACCOUNT: ${WEBSITE_DB_ACCOUNT:-Account}
+      WEBSITE_DB_CASH: ${WEBSITE_DB_CASH:-CabalCash}
+      WEBSITE_DB_GAME: ${WEBSITE_DB_GAME:-Server01}
+      WEBSITE_DB_NETCAFE: ${WEBSITE_DB_NETCAFE:-NetcafeBilling}
+      WEBSITE_DB_EVENT: ${WEBSITE_DB_EVENT:-EventData}
+      WEBSITE_DB_SITE: ${WEBSITE_DB_SITE:-reygie}
+    ports:
+      - "${WEBSITE_PORT:-8080}:80"
     networks:
       - cabal
 
