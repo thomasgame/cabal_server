@@ -45,6 +45,14 @@ chmod +x bin/cabalctl
 - `AUTO_START`：设为 `false` 时只启动 Supervisor，不自动启动游戏进程。
 - `TZ`：两个容器的时区。
 
+`MSSQL_SA_PASSWORD` 至少需要 8 个字符，并且应同时包含大写字母、小写字母、数字和符号。由于游戏服务自身的密码解析限制，密码不能包含 `@`、`/` 或 `\`。仅用于本地测试的可用示例：
+
+```dotenv
+MSSQL_SA_PASSWORD=CabalDb!2026X
+```
+
+生产环境不要直接使用该公开示例，应生成符合上述要求的独立强密码。全新部署时在首次执行 `up` 前设置密码；已有数据库卷还需要同步修改 SQL Server 内的 SA 密码，不能只修改 `.env`。
+
 常用修改命令：
 
 ```bash
